@@ -73,6 +73,11 @@ app.post('/feature2', urlencodedParser, (request, response) => {
 			title: 'Cards',
 			image: message
 		});
+	}).catch((error) => {
+		response.render('feature2.hbs', {
+			title: 'Cards',
+			output: error
+		});
 	});
 });
 
@@ -88,6 +93,6 @@ const getImages = async (imgSearch) => {
 
 const getCards = async (number) => {
 	const response = await axios.get(`https://deckofcardsapi.com/api/deck/new/draw/?count=${encodeURIComponent(number)}`);
-	const cardImg = response.data.cards[0].image;
+	const cardImg = response.data.cards[0].images.png;
 	return cardImg;
 }
