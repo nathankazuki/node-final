@@ -22,6 +22,10 @@ hbs.registerHelper('message', (text) => {
     return text;
 });
 
+hbs.registerHelper('getPicture', (img) => {
+  return img
+});
+
 app.use((request, response, next) => {
     setTimeout(() => {
         next();
@@ -41,17 +45,17 @@ app.get('/feature1', (request, response) => {
 	});
 });
 
-// FEATURE 1 NOT IMPLEMENTED YET
+//FEATURE 1 NOT IMPLEMENTED YET
 app.post('/feature1', urlencodedParser, (request, response) => {
-	getTemperature(request.body.city).then((message) => {
+	getImages(request.body.input).then((message) => {
 		response.render('feature1.hbs', {
-			title: 'Feature 1',
-			output: message
+			title: 'NASA Images',
+			image: message
 		});
 	}).catch((error) => {
 		response.render('feature1.hbs', {
-			title: 'Feature 1',
-			output: 'Invalid City'
+			title: 'NASA Images',
+			output: 'Image could not be found'
 		});
 	});
 });
@@ -62,18 +66,28 @@ app.get('/feature2', (request, response) => {
 	});
 });
 
-// FEATURE 2 NOT IMPLEMENTED YET
+//FEATURE 2 NOT IMPLEMENTED YET
 app.post('/feature2', urlencodedParser, (request, response) => {
-
+	getCards(request.body.input).then((message) => {
+		response.render('feature2.hbs', {
+			title: 'Cards',
+			image: message
+		});
+	});
 });
 
 app.listen(port, () => {
 	console.log(`Server is up on port ${port}`);
 });
 
-const getTemperature = async (city) => {
-	const response = await axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=7a2a58dca43fc0d58ba404dc3e646a7d`);
-	const temperature = response.data.main.temp - 273.15;
-	const weather = response.data.weather[0].description;
-	return `The current temperature in ${city} is ${temperature.toFixed(1)} degrees Celsius with ${weather}`;
+const getImages = async (imgSearch) => {
+	const response = await axios.get(`https://images-api.nasa.gov/search?q=${encodeURIComponent(imgSearch)}`);
+	const image = response.data.collection.items[0].links[0].href;
+	return image;
+}
+
+const getCards = async (number) => {
+	const response = await axios.get(`https://deckofcardsapi.com/api/deck/new/draw/?count=${encodeURIComponent(number)}`);
+	const cardImg = response.data.cards[0].image;
+	return cardImg;
 }
