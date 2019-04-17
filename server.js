@@ -51,7 +51,7 @@ app.post('/feature1', urlencodedParser, (request, response) => {
 	}).catch((error) => {
 		response.render('feature1.hbs', {
 			title: 'Feature 1',
-			output: error
+			output: 'Invalid City'
 		});
 	});
 });
